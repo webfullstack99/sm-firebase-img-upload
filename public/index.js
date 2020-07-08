@@ -1,4 +1,3 @@
-
 fileButton.addEventListener('change', function (e) {
     let storageRef = firebase.storage().ref()
     for (let i = 0; i < e.target.files.length; i++) {
@@ -9,6 +8,7 @@ fileButton.addEventListener('change', function (e) {
         task.on('state_changed', function process(snapshot) {
             let percent = snapshot.bytesTransferred / snapshot.totalBytes * 100;
             console.log(`${percent}%`);
+            console.log(snapshot.state);
             switch (snapshot.state) {
                 case firebase.storage.TaskState.PAUSED:
                     console.log('PAUSED');
@@ -18,6 +18,12 @@ fileButton.addEventListener('change', function (e) {
                     console.log('RUNNING');
                     break;
             }
+        }, function (err) {
+            console.log(err);
+        }, function () {
+            task.snapshot.ref.getDownloadURL().then(function (downloadURL) {
+                console.log('File available at', downloadURL);
+            });
         })
     }
 })
